@@ -1,0 +1,115 @@
+{
+  "name": "mixed-workday-spectrum",
+  "description": "A realistic day combining interactive users, session saws, cron work, batches, a campaign flash crowd, telemetry, and outage backfill.",
+  "seed": 505,
+  "gatewayPods": 4,
+  "historyWindow": "2s",
+  "alpha": 0.75,
+  "epsilon": 0.25,
+  "weightScale": 10,
+  "workerConcurrency": 10,
+  "baseWorkDurationMillis": 15,
+  "expectedCapacity": 50,
+  "bucketDuration": "750ms",
+  "warmupDuration": "0s",
+  "duration": "72s",
+  "tenants": {
+    "human-traffic": { "weight": 2 },
+    "scheduled-automation": { "weight": 1 },
+    "background-maintenance": { "weight": 0.5 }
+  },
+  "streams": [
+    {
+      "tenant": "human-traffic",
+      "subtenant": "office-hours",
+      "cost": 1,
+      "profile": {
+        "baseRate": 2,
+        "cap": 30,
+        "wake": { "start": 0.12, "end": 0.88, "smoothness": 0.04, "amplitude": 14 },
+        "bumps": [
+          { "center": 0.22, "width": 0.035, "amplitude": 10 },
+          { "center": 0.52, "width": 0.06, "amplitude": -10 }
+        ]
+      }
+    },
+    {
+      "tenant": "human-traffic",
+      "subtenant": "session-saw",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 15,
+        "saws": [{ "cycles": 3, "phase": 0, "low": 1, "high": 12 }]
+      }
+    },
+    {
+      "tenant": "human-traffic",
+      "subtenant": "submitted-batch",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 1,
+        "batches": [
+          { "at": 0.19, "tasks": 35 },
+          { "at": 0.82, "tasks": 40 }
+        ]
+      }
+    },
+    {
+      "tenant": "scheduled-automation",
+      "subtenant": "shifted-day",
+      "cost": 1,
+      "profile": {
+        "baseRate": 2,
+        "cap": 25,
+        "wake": { "start": 0.25, "end": 0.96, "smoothness": 0.05, "amplitude": 12 }
+      }
+    },
+    {
+      "tenant": "scheduled-automation",
+      "subtenant": "periodic-cron",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 1,
+        "batches": [
+          { "at": 0.15, "tasks": 15 },
+          { "at": 0.30, "tasks": 15 },
+          { "at": 0.45, "tasks": 15 },
+          { "at": 0.60, "tasks": 15 },
+          { "at": 0.75, "tasks": 15 },
+          { "at": 0.90, "tasks": 15 }
+        ]
+      }
+    },
+    {
+      "tenant": "scheduled-automation",
+      "subtenant": "flash-crowd",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 36,
+        "bumps": [{ "center": 0.66, "width": 0.035, "amplitude": 22 }]
+      }
+    },
+    {
+      "tenant": "background-maintenance",
+      "subtenant": "telemetry",
+      "cost": 1,
+      "profile": { "baseRate": 4, "cap": 4 }
+    },
+    {
+      "tenant": "background-maintenance",
+      "subtenant": "outage-backfill",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 28,
+        "triangles": [
+          { "start": 0.42, "peak": 0.50, "end": 0.62, "amplitude": 18 }
+        ]
+      }
+    }
+  ]
+}

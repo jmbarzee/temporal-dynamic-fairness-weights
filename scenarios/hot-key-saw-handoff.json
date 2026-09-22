@@ -1,0 +1,54 @@
+{
+  "name": "hot-key-saw-handoff",
+  "description": "Opposing saw waves move demand between sibling keys while aggregate tenant demand remains stable.",
+  "seed": 303,
+  "gatewayPods": 4,
+  "historyWindow": "1.5s",
+  "alpha": 1,
+  "epsilon": 0.25,
+  "weightScale": 10,
+  "workerConcurrency": 10,
+  "baseWorkDurationMillis": 15,
+  "expectedCapacity": 50,
+  "bucketDuration": "500ms",
+  "warmupDuration": "0s",
+  "duration": "48s",
+  "tenants": {
+    "handoff-saw": { "weight": 2 },
+    "steady-reference": { "weight": 1 }
+  },
+  "streams": [
+    {
+      "tenant": "handoff-saw",
+      "subtenant": "ascending-a",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 30,
+        "saws": [{ "cycles": 2, "phase": 0, "low": 2, "high": 28 }]
+      }
+    },
+    {
+      "tenant": "handoff-saw",
+      "subtenant": "ascending-b",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 30,
+        "saws": [{ "cycles": 2, "phase": 0.5, "low": 2, "high": 28 }]
+      }
+    },
+    {
+      "tenant": "steady-reference",
+      "subtenant": "steady",
+      "cost": 1,
+      "profile": {
+        "baseRate": 9,
+        "cap": 28,
+        "plateaus": [
+          { "start": 0.32, "end": 0.62, "edgeWidth": 0.025, "amplitude": 12 }
+        ]
+      }
+    }
+  ]
+}

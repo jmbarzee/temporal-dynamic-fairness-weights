@@ -1,0 +1,89 @@
+{
+  "name": "periodic-synchronized-batches",
+  "description": "Identical periodic jobs compare synchronized thundering herds with evenly staggered automation.",
+  "seed": 404,
+  "gatewayPods": 4,
+  "historyWindow": "1.5s",
+  "alpha": 0.75,
+  "epsilon": 0.25,
+  "weightScale": 10,
+  "workerConcurrency": 10,
+  "baseWorkDurationMillis": 15,
+  "expectedCapacity": 50,
+  "bucketDuration": "500ms",
+  "warmupDuration": "0s",
+  "duration": "42s",
+  "tenants": {
+    "steady-stream": { "weight": 2 },
+    "synchronized-batches": { "weight": 1 },
+    "staggered-batches": { "weight": 1 }
+  },
+  "streams": [
+    {
+      "tenant": "steady-stream",
+      "subtenant": "foreground",
+      "cost": 1,
+      "profile": { "baseRate": 18, "cap": 18 }
+    },
+    {
+      "tenant": "synchronized-batches",
+      "subtenant": "cron-a",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 1,
+        "batches": [
+          { "at": 0.20, "tasks": 35 },
+          { "at": 0.40, "tasks": 35 },
+          { "at": 0.60, "tasks": 35 },
+          { "at": 0.80, "tasks": 35 }
+        ]
+      }
+    },
+    {
+      "tenant": "synchronized-batches",
+      "subtenant": "cron-b",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 1,
+        "batches": [
+          { "at": 0.20, "tasks": 35 },
+          { "at": 0.40, "tasks": 35 },
+          { "at": 0.60, "tasks": 35 },
+          { "at": 0.80, "tasks": 35 }
+        ]
+      }
+    },
+    {
+      "tenant": "staggered-batches",
+      "subtenant": "cron-a",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 1,
+        "batches": [
+          { "at": 0.15, "tasks": 35 },
+          { "at": 0.35, "tasks": 35 },
+          { "at": 0.55, "tasks": 35 },
+          { "at": 0.75, "tasks": 35 }
+        ]
+      }
+    },
+    {
+      "tenant": "staggered-batches",
+      "subtenant": "cron-b",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 1,
+        "batches": [
+          { "at": 0.25, "tasks": 35 },
+          { "at": 0.45, "tasks": 35 },
+          { "at": 0.65, "tasks": 35 },
+          { "at": 0.85, "tasks": 35 }
+        ]
+      }
+    }
+  ]
+}

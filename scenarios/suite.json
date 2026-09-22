@@ -1,0 +1,10 @@
+{
+  "name": "fairness-load-profile-mechanics",
+  "scenarios": [
+    "weighted-sine-baseline.json",
+    "sustained-with-overlapping-batches.json",
+    "hot-key-saw-handoff.json",
+    "periodic-synchronized-batches.json",
+    "mixed-workday-spectrum.json"
+  ]
+}

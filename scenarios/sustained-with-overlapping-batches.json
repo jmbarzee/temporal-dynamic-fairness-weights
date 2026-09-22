@@ -1,0 +1,60 @@
+{
+  "name": "sustained-with-overlapping-batches",
+  "description": "Steady interactive demand competes with isolated and overlapping all-at-once batch submissions.",
+  "seed": 202,
+  "gatewayPods": 4,
+  "historyWindow": "2s",
+  "alpha": 0.75,
+  "epsilon": 0.25,
+  "weightScale": 10,
+  "workerConcurrency": 10,
+  "baseWorkDurationMillis": 15,
+  "expectedCapacity": 50,
+  "bucketDuration": "500ms",
+  "warmupDuration": "0s",
+  "duration": "42s",
+  "tenants": {
+    "foreground-load": { "weight": 2 },
+    "background-load": { "weight": 1 }
+  },
+  "streams": [
+    {
+      "tenant": "foreground-load",
+      "subtenant": "steady-requests",
+      "cost": 1,
+      "profile": { "baseRate": 18, "cap": 18 }
+    },
+    {
+      "tenant": "background-load",
+      "subtenant": "steady-requests",
+      "cost": 1,
+      "profile": { "baseRate": 8, "cap": 8 }
+    },
+    {
+      "tenant": "foreground-load",
+      "subtenant": "sporadic-batch",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 1,
+        "batches": [
+          { "at": 0.20, "tasks": 120 },
+          { "at": 0.62, "tasks": 130 }
+        ]
+      }
+    },
+    {
+      "tenant": "background-load",
+      "subtenant": "overlapping-batch",
+      "cost": 1,
+      "profile": {
+        "baseRate": 0,
+        "cap": 1,
+        "batches": [
+          { "at": 0.38, "tasks": 100 },
+          { "at": 0.64, "tasks": 110 }
+        ]
+      }
+    }
+  ]
+}

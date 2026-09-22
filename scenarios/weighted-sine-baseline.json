@@ -1,0 +1,44 @@
+{
+  "name": "weighted-sine-baseline",
+  "description": "Two proportional interactive tenants cross capacity together, establishing the fixed-weight control case.",
+  "seed": 101,
+  "gatewayPods": 4,
+  "historyWindow": "2s",
+  "alpha": 0.75,
+  "epsilon": 0.25,
+  "weightScale": 10,
+  "workerConcurrency": 10,
+  "baseWorkDurationMillis": 15,
+  "expectedCapacity": 50,
+  "bucketDuration": "500ms",
+  "warmupDuration": "0s",
+  "duration": "36s",
+  "tenants": {
+    "high-amplitude-wave": { "weight": 2 },
+    "low-amplitude-wave": { "weight": 1 }
+  },
+  "streams": [
+    {
+      "tenant": "high-amplitude-wave",
+      "subtenant": "interactive",
+      "cost": 1,
+      "profile": {
+        "baseRate": 8,
+        "cap": 55,
+        "wake": { "start": 0.25, "end": 0.70, "smoothness": 0.05, "amplitude": 30 },
+        "rhythms": [{ "cycles": 1, "phase": 0.75, "amplitude": 8 }]
+      }
+    },
+    {
+      "tenant": "low-amplitude-wave",
+      "subtenant": "interactive",
+      "cost": 1,
+      "profile": {
+        "baseRate": 5,
+        "cap": 28,
+        "wake": { "start": 0.25, "end": 0.70, "smoothness": 0.05, "amplitude": 15 },
+        "rhythms": [{ "cycles": 1, "phase": 0.75, "amplitude": 4 }]
+      }
+    }
+  ]
+}
